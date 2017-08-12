@@ -15,14 +15,15 @@ SH, SW = 900-45, 1600
 # camera capture frame size
 FRAME_H, FRAME_W = 600, 800
 # corners : [(top left), (top right), (bottom left), (bottom right)] : (x,y)
-CORNER = [[172, 115], [674, 117], [214, 346], [630, 351]]
+#CORNER = [[172, 115], [674, 117], [214, 346], [630, 351]]
+CORNER = [[181 ,111], [681,111], [220,343], [632,350]]
 SCREEN = [[0, 0], [SW, 0], [0, SH], [SW, SH]]
 pts1 = np.float32(CORNER)
 pts2 = np.float32(SCREEN)
 M = cv2.getPerspectiveTransform(pts1,pts2)
 
 # threshold
-TH = 130
+TH = 100
 
 # color
 RED, GREEN, BLUE = (0, 0, 255), (0, 255, 0), (255, 0, 0)
@@ -81,7 +82,7 @@ meanX, meanY = -1, -1
 # ---------- MAIN ----------
 # --------------------------
 # カメラキャプチャ
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 800)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
 
@@ -163,6 +164,14 @@ while True:
 
         # ラジコン検出
         det = np.array((frame[:, :, 0] < TH) * (frame[:, :, 1] < TH) * (frame[:, :, 2] < TH))
+
+        """
+        #FIXME:
+        a = np.zeros(det.shape)
+        a[det] = 1
+        cv2.imshow('det', a)
+        """
+
         detY, detX = np.where(det)
         if len(detY) == 0 or len(detX) == 0:
             # 検出なし
@@ -269,8 +278,6 @@ while True:
         cv2.putText(screen, RANK_UINT[i], (130, 120+70*i), FONT, RANK_SIZE[i], RANK_COLOR[i], 2) # rank
         cv2.putText(screen, str(rank[0]), (330, 120+70*i), FONT, RANK_SIZE[i], RANK_COLOR[i], 2) # score
         cv2.putText(screen, str(rank[1]), (530, 120+70*i), FONT, RANK_SIZE[i], RANK_COLOR[i], 2) # name
-        if a == i:
-            cv2.put
 
     # 表示
     cv2.imshow(GAME, screen)
